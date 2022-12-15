@@ -1,7 +1,11 @@
 const express = require('express');
-const connectDb = require('./db/connect')
+const connectDb = require('./db/connect');
+const userRouter = require('./routes/User');
 
 const app = express(); 
+
+app.use(express.json())
+app.use('/user',userRouter)
 
 const start = () => 
 {
