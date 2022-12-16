@@ -11,7 +11,8 @@ const UserSchema = new mongoose.Schema(
 
 UserSchema.pre('save', async function(next) {
     if (!this.isModified('password')) next();
-    this.password = bcrypt.hash(this.password, 8);
+    this.password = await bcrypt.hash(this.password, 8);
+    console.log(bcrypt.hash(this.password, 8))
 });
 
 UserSchema.methods = {

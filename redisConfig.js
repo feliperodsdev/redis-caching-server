@@ -1,5 +1,4 @@
 const Redis = require('ioredis');
-const {promisify} = require('util')
 
 const redisClient = new Redis({
   host: 'localhost',
@@ -16,4 +15,9 @@ async function setRedis(key, value) {
   return await redisClient.set(key, data)
 }
 
-module.exports = {redisClient, getRedis, setRedis}
+async function deleteRedis(key)
+{
+  return await redisClient.del(key)
+}
+
+module.exports = {redisClient, getRedis, setRedis, deleteRedis}

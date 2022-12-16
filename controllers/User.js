@@ -26,7 +26,7 @@ const createUser = async (req, res) =>
     if(!userQuery)
     {
         var user = await UserModel.create({username, password, name})
-        
+        setRedis(`user-${user._id}`, {username: user.username, name: user.name})
         res.status(200).send(user)
     }
     else
