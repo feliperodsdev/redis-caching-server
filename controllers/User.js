@@ -1,5 +1,6 @@
 const UserModel = require('../models/User')
 const jwt = require('jsonwebtoken')
+const {getRedis, setRedis} = require('../redisConfig')
 
 const login = async (req, res) =>
 {
@@ -25,6 +26,7 @@ const createUser = async (req, res) =>
     if(!userQuery)
     {
         var user = await UserModel.create({username, password, name})
+        
         res.status(200).send(user)
     }
     else
@@ -33,9 +35,37 @@ const createUser = async (req, res) =>
     }
 }
 
+const getUserById = async (req, res) => 
+{
+    var userId = req.user
+    try 
+    {
+        var user = await UserModel.findOne({userId})
+        if(!user) res.status(404).send('User doesnt exists')
+        else 
+        {
+            var userRedis = await getRedis(`user-${userId}`)
+            if(!userRedis)
+            {
+                setRedis(`user-${userId}`, {username: user.username, name: user.name})
+                res.status(200).send(user)
+            }
+            else 
+            {
+                res.status(200).send(userRedis)
+            }
+        }
+    
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+}
 
 module.exports = 
 {
     login, 
-    createUser
+    createUser, 
+    getUserById
 }

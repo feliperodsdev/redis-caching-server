@@ -10,7 +10,7 @@ const AuthMiddleware = (req, res, next) =>
         {
             var token = authToken.split(' ')[1]
             const user = jwt.verify(token, process.env.SECRET_KEY)
-            req.user = user
+            req.user = user._id
             next()
         }
         catch(e)

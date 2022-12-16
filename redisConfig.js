@@ -1,16 +1,19 @@
 const Redis = require('ioredis');
 const {promisify} = require('util')
 
-const redisClient = new Redis();
+const redisClient = new Redis({
+  host: 'localhost',
+  port: 6379,
+});
 
-function getRedis(value) {
-  const syncRedisGet = promisify(redisClient.get).bind(redisClient);
-  return syncRedisGet(value);
+async function getRedis(value)  {
+  const data = await redisClient.get(value)
+  return data ? JSON.parse(data) : null; 
 }
 
-function setRedis(key, value) {
-  const syncRedisSet = promisify(redisClient.set).bind(redisClient);
-  return syncRedisSet(key, value);
+async function setRedis(key, value) {
+  const data = JSON.stringify(value)
+  return await redisClient.set(key, data)
 }
 
-module.export = { redisClient, getRedis, setRedis };
+module.exports = {redisClient, getRedis, setRedis}
